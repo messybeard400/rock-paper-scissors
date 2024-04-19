@@ -13,7 +13,8 @@ function getComputerChoice() {
 }
 
 function playRound(playerSelection, computerSelection) {
-    let playerMove = playerSelection.charAt(0).toUpperCase() + playerSelection.slice(1).toLowerCase();
+    let playerMove = playerSelection.charAt(0).toUpperCase() +
+     playerSelection.slice(1).toLowerCase();
 
     //if (playerMove == computerSelection) {
         //return (`It is a tie. Both players played ${computerSelection}`)
@@ -48,23 +49,53 @@ function playRound(playerSelection, computerSelection) {
     }
 }
 
-function playGame() {
-    let wins = 0; 
-    let compWins = 0;
+let wins = 0; 
+let compWins = 0;
 
-    for (let i = 0; i < 5; i++) {
-        let playerTurn = prompt("Rock, Paper, or Scissors?", "rock");
-        let compTurn = getComputerChoice();
+function playGame(button) {
+    let playerTurn = button;
+    let compTurn = getComputerChoice();
+    let outcome = playRound(playerTurn, compTurn); 
+    tie.textContent = "";
+    if (outcome == 'you') { 
+        wins += 1;
+    } else if (outcome == 'comp') {
+        compWins += 1;
+    } else {
+        tie.textContent = "It was a tie game.";
+        playerOption.append(tie);
+    }
+    statement.textContent = `Current Score is Player: ${wins} Computer: ${compWins}`;
+    playerOption.appendChild(statement);
+};
 
-        let outcome = playRound(playerTurn, compTurn); 
-        if (outcome == 'you') { 
-            wins += 1;
-        } else if (outcome == 'comp') {
-            compWins += 1;
+const playerOption = document.querySelector(".playerOptions");
+const statement = document.createElement("div");
+const tie = document.createElement("div"); 
+const winStatement = document.createElement("div");
+
+// what happens when you click a move 
+const buttons = document.querySelectorAll(".move"); 
+buttons.forEach ((button) => {
+    button.addEventListener("click", () => {
+        if (wins == 5 || compWins == 5) {
+            let winner = 
+            wins > compWins ? "you" : "computer";
+
+            winStatement.textContent = `Game over, ${winner} has won 5 games.`;
+            playerOption.appendChild(winStatement);
         } else {
-            console.log('It was a tie game')
+            playGame(button.textContent);
         }
-        console.log(`Current Score is Player: ${wins} Computer: ${compWins}`)
-    }    
-    alert(`Final Score is Player: ${wins} Computer: ${compWins}`)
-}
+    });
+});
+
+const reset = document.querySelector(".reset");
+reset.addEventListener ("click", () => {
+    wins = 0;
+    compWins= 0;
+    statement.textContent = '';
+    winStatement.textContent = '';
+    tie.textContent = '';
+});
+
